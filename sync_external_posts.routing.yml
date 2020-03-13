@@ -1,0 +1,7 @@
+sync_external_posts.api_batch_form:
+  path: '/admin/api-batch-form'
+  defaults:
+    _form: '\Drupal\sync_external_posts\Form\ApiBatchForm'
+    _title: 'ApiBatchForm'
+  requirements:
+    _permission: 'use api batch form'

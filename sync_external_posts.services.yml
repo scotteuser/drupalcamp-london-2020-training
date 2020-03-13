@@ -1,0 +1,10 @@
+services:
+  sync_external_posts.api_connection:
+    class: Drupal\sync_external_posts\Api\ApiConnectionService
+    arguments: ['@http_client']
+  sync_external_posts.api_get_paint_cans:
+    class: Drupal\sync_external_posts\Api\ApiGetPaintCansService
+    arguments: ['@sync_external_posts.api_connection']
+  sync_external_posts.node_paint_can_update:
+    class: Drupal\sync_external_posts\Node\NodePaintCanUpdateService
+    arguments: ['@entity_type.manager']

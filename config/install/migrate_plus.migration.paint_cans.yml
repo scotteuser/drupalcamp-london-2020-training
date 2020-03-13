@@ -1,0 +1,18 @@
+id: paint_cans
+label: 'Migration of Paint Cans from the API'
+
+# Migrate from our API source.
+source:
+  plugin: api_migrate_source_paint_cans
+
+# Map the results to our node. Node fields on the left, API source array
+# keys on the right. See the docs for more complex examples.
+process:
+  title: name
+  # Map more fields here, potential use a lookup plugin to map to
+  # paint cans already migrated by the Batch API.
+
+# Use the entity destination plugin to create the paint can nodes.
+destination:
+  plugin: entity:node
+  default_bundle: paint_can
