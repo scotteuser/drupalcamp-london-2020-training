@@ -2,7 +2,25 @@
 
 **DrupalCamp London 2020 Training - Detailed instructions**
 
-[Google Drive Folder of all assets](https://drive.google.com/drive/folders/1Ef9SAZSl-k74UliY9u86Y35WO0g9Ukr5)
+## Table of contents
+
+1. Setting up a Drupal 8 site
+1. Planning & mapping
+1. Create the entity to store the data in
+1. Create our skeleton module
+1. Working with the external API
+1. Creating the entity programmatically
+1. Working with the Batch API
+
+Bonus:
+
+* BONUS 1: Use the Migrate API instead of (or as well as) the Batch API
+
+Other things you could do with this:
+
+* BONUS 2: Refactor BatchProcessor
+* BONUS 3: Create a Views Query Plugin
+* BONUS 4: Create a batch hook_update_N
 
 ## 1 Setting up a Drupal 8 site
 
