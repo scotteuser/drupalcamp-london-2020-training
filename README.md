@@ -4,15 +4,15 @@
 
 [Google Drive Folder of all assets](https://drive.google.com/drive/folders/1Ef9SAZSl-k74UliY9u86Y35WO0g9Ukr5)
 
-## Setting up a Drupal 8 site
+## 1 Setting up a Drupal 8 site
 
 Make sure you have a Drupal 8 site up and running. This should ideally be installed via composer and ideally you should have access to Drupal Console but neither required (if you are using DDEV, Drupal Console is available).
 
-### Installing via composer
+### 1.1 Installing via composer
 
 [View the Drupal 8 docs here](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies#s-using-drupalrecommended-project)
 
-#### Detailed steps to install using DDEV
+#### 1.1.1 Detailed steps to install using DDEV
 
 1. Create a project like `composer create-project drupal/recommended-project drupalcamp-london-2020-training`
 1. Enter that directory, so `cd drupalcamp-london-2020-training`
@@ -22,7 +22,7 @@ Make sure you have a Drupal 8 site up and running. This should ideally be instal
 1. Install Drupal using the standard profile (the DDEV database configuration is username `db`, password `db`, database name `db`, and advanced > host `db`)
 1. Login to the Drupal site (you can also do this with `drush` using `drush uli 1` to login as user 1)
 
-### Turn off caching and turn on error handling.
+### 1.2 Turn off caching and turn on error handling.
 
 1. In your web/sites/default/settings.php uncomment these lines so your site includes a settings.local.php (for a real project, you then put settings.local.php into .gitignore so it applies only to your local environment. (If you ran `ddev config` to get your site, this probably got removed, you can add the below after the settings.ddev.php).
 ```
@@ -39,7 +39,7 @@ die();
 ```
 Now delete that.
 
-### Install devel and kint
+### 1.3 Install devel and kint
 
 1. Install the devel module from the project root (this is one level up from the web folder, get there with `cd ..` if you are in the web folder), run `composer require drupal/devel` and enable devel and kint from the web root `drush pm-enable devel, kint -y`
 1. Add the [kint max levels config](https://gist.github.com/JPustkuchen/a5f1eaeb7058856b7ef087b028ffdfeb) to your project to prevent memory errors if dumping large objects
@@ -49,7 +49,7 @@ Now delete that.
    1. If not go to the project root (ie, one level up from web) and run `composer require drupal/console:~1.0 --prefer-dist --optimize-autoloader`
    1. If you have permissions issues make sure composer can write to web/sites/default/ , so `sudo chmod u+w web/sites/default/`
 
-## Planning & mapping
+## 2 Planning & mapping
 
 * The sample API can be found here: https://reqres.in/- we will start by looking at the GET posts endpoint (https://reqres.in/api/posts and https://reqres.in/api/posts?page=2 etc).
 * We can decide what Entity we want this to eventually go to in Drupal 8.
@@ -59,7 +59,7 @@ Now delete that.
 
 * Note that we should store the API id in the Drupal 8 site so we eventually know what to update, so we can create a field like ‘External ID’ on the Entity (when using Migrate API, Migrate does the storage of the API id for you, but it is needed for the Batch API).
 
-## Create the entity to store the data in
+## 3 Create the entity to store the data in
 
 1. Create a node type, eg `Paint Can` (machine name `paint_can`)
 1. Create fields matching the data (note that this is not required, later we will see how we can transform the data on it's way into Drupal):
@@ -67,9 +67,9 @@ Now delete that.
    1. Colour
    1. Pantone Value
 
-## Create our skeleton module
+## 4 Create our skeleton module
 
-### Add the required MODULE_NAME.info.yml file
+### 4.1 Add the required MODULE_NAME.info.yml file
 
 [See the documentation here](https://www.drupal.org/docs/8/creating-custom-modules/let-drupal-8-know-about-your-module-with-an-infoyml-file). Eg, at `sync_external_posts.info.yml` add your info yml contents like
 
@@ -81,7 +81,7 @@ core: 8.x
 package: 'Custom'
 ```
 
-### Create a MODULE_NAME.permissions.yml file
+### 4.2 Create a MODULE_NAME.permissions.yml file
 
 [See an example here](https://api.drupal.org/api/drupal/core!modules!node!node.permissions.yml/8.2.x)
 
@@ -91,7 +91,7 @@ use api batch form:
   title: 'Use the API Batch Form'
 ```
 
-### Create a MODULE_NAME.routing.yml file
+### 4.3 Create a MODULE_NAME.routing.yml file
 
 The key should be MODULE_NAME.SOME_ID. We will set an admin path and specify a form class `ApiBatchForm` within our namespace.
 ```
@@ -105,7 +105,7 @@ sync_external_posts.api_batch_form:
 ```
 Notice here, we also used our permission we created above.
 
-### Create our folder structure within our module
+### 4.4 Create our folder structure within our module
 
 - src
   - Form
@@ -117,9 +117,9 @@ Notice here, we also used our permission we created above.
   - Node
     - ... files will go here
 
-## Working with the external API
+## 5 Working with the external API
 
-### Start by creating a form
+### 5.1 Start by creating a form
 
 We need to use our class name we specified in the routing.yml,
 so create the file in the Form folder `ApiBatchForm.php`. Here is a skeleton:
@@ -156,19 +156,19 @@ class ApiBatchForm extends FormBase {
 ```
 You can see the [full documentation for the Form class here](https://www.drupal.org/docs/8/api/form-api/introduction-to-form-api).
 
-### Enable the module
+### 5.2 Enable the module
 
 ```
 drush pm-enable sync_external_posts
 ```
 
-### Check that we can output debugs there
+### 5.3 Check that we can output debugs there
 
 1. Visit the URL we set up in the routing.yml and check that the form loads.
 1. Add `dvm('hello');` and `ksm('hello');` inside our `buildForm` method of the form class.
 1. Check that the output appeared.
 
-### Create the API connection service
+### 5.4 Create the API connection service
 
 1. Create a `sync_external_posts.services.yml` and add the service:
 
@@ -233,7 +233,7 @@ use Drupal\Component\Utility\UrlHelper;
   }
 ```
 
-#### Test connecting to the API
+#### 5.4.1 Test connecting to the API
 
 We can put some temporary code into our `buildForm` method of our form again:
 
@@ -249,7 +249,7 @@ dvm($results);
 This should give us a list of results from page one. We can change the page number to `2` to
 see the second page of results.
 
-### Create an API Paint Can Getting Service
+### 5.5 Create an API Paint Can Getting Service
 
 We have now connected to the API; now let's implement one of the APIs endpoints
 in new service:
@@ -281,7 +281,7 @@ We also need to add our new service to the services.yml file:
     arguments: ['@sync_external_posts.api_connection']
 ```
 
-#### Move our test retrieval of posts into a page
+#### 5.5.1 Move our test retrieval of posts into a page
 
 We add a method here to retrieve a page of results, defaulting to page 1.
 
@@ -306,7 +306,7 @@ $results = $api_get_paint_cans->getPosts(1);
 dvm($results);
 ```
 
-#### Create a method to retrieve just the data
+#### 5.5.2 Create a method to retrieve just the data
 
 We can see from the API results that the individual items are
 stored within the array key 'data' and the rest is meta data.
@@ -322,7 +322,7 @@ We can use that meta data later so we will leave our original method.
   }
 ```
 
-#### Create a method to get a single result
+#### 5.5.3 Create a method to get a single result
 
 While we can see the API listing returns the same data as the
 individual result, this is not normal. Normally if you would retrieve
@@ -344,7 +344,7 @@ We can test this is working as well:
 dvm($api_get_paint_cans->getPostData(3));
 ```
 
-#### Create a couple methods to retrieve the meta data
+#### 5.5.4 Create a couple methods to retrieve the meta data
 
 If we think of the batch process as a progress bar, we can only show
 accurate progress if we know how many items there are in total and
@@ -375,7 +375,7 @@ dvm($api_get_paint_cans->getPostsPerPage());
 dvm($api_get_paint_cans->getTotalPosts());
 ```
 
-## Creating the entity programmatically
+## 6 Creating the entity programmatically
 
 Add a service to insert or update a node to our services.yml (upsert).
 We will add the entity_type.manager Drupal Core service to help us find
@@ -387,7 +387,7 @@ and load existing nodes. We alternative also use other tools like EntityQuery.
     arguments: ['@entity_type.manager']
 ```
 
-### Create the class
+### 6.1 Create the class
 
 ```
 <?php
@@ -408,7 +408,7 @@ class NodePaintCanUpdateService {
 }
 ````
 
-### Add a method to create the Node
+### 6.2 Add a method to create the Node
 
 We are now going to need a place to store the external ID on the Node
 so we can decide whether to create a new node or update the existing node.
@@ -427,7 +427,7 @@ so we can decide whether to create a new node or update the existing node.
   }
 ```
 
-### Check whether a node already exists
+### 6.3 Check whether a node already exists
 
 1. Update the upsert method:
 ```
@@ -471,12 +471,12 @@ upsert method. This is our opportunity to make any modifications.
     }
 ```
 
-### Test upserting the node from the API data.
+### 6.4 Test upserting the node from the API data.
 
-## Working with the Batch API
+## 7 Working with the Batch API
 
 
-### Create a skeleton class for processing our batch
+### 7.1 Create a skeleton class for processing our batch
 
 This can go into our Batch folder to help keep our code organised.
 ```
@@ -490,7 +490,7 @@ class BatchProcessor {
 
 }
 ```
-### Creating the batch builder.
+### 7.2 Creating the batch builder.
 
 Add the batch builder to our submit handler. Let's talk through each bit.
 Note that the BatchProcessor methods will be called statically.
@@ -512,7 +512,7 @@ Note that the BatchProcessor methods will be called statically.
   }
 ```
 
-### Creating the batch operation and finished callbacks.
+### 7.3 Creating the batch operation and finished callbacks.
 
 These must be static methods.
 
@@ -542,7 +542,7 @@ These must be static methods.
 Let's hit the submit button on our form to see our batch running. We should
 see it has process 0 paint cans.
 
-### Initialise the sandbox
+### 7.4 Initialise the sandbox
 
 The &$context standard variables to use in the operation callback are the following two special keys:
 - `sandbox` - Every time the operation runs, this variable is passed and contains the sandbox values of previous runs.
@@ -585,7 +585,7 @@ Let's see how to use this sandbox variable to handle the batching. We will talk 
   }
 ```
 
-### Batch progress
+### 7.5 Batch progress
 
 Let's now replace the `TODO` with the following:
 ```
@@ -610,7 +610,7 @@ Let's now replace the `TODO` with the following:
       }
 ```
 
-### Get the API result and create the node
+### 7.6 Get the API result and create the node
 
 Let's now replace the above `TODO` with the following:
 
