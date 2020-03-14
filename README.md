@@ -497,6 +497,10 @@ upsert method. This is our opportunity to make any modifications.
 ### 6.4 Test upserting the node from the API data.
 
 ```
+/** @var \Drupal\sync_external_posts\Api\ApiGetPaintCansService $api_get_paint_cans */
+$api_get_paint_cans = \Drupal::service('sync_external_posts.api_get_paint_cans');
+$result = $api_get_paint_cans->getPostData(7);
+
 /** @var \Drupal\sync_external_posts\Node\NodePaintCanUpdateService $node_paint_can_update */
 $node_paint_can_update = \Drupal::service('sync_external_posts.node_paint_can_update');
 $node_paint_can_update->upsertNodePaintCan($result);
