@@ -225,6 +225,11 @@ class ApiConnectionService {
 
 1. Check that we can load our service in our form.
 
+```
+/** @var \Drupal\sync_external_posts\Api\ApiConnectionService $api_connection */
+$api_connection = \Drupal::service('sync_external_posts.api_connection');
+```
+
 1. We are going to need some additional tools from Drupal. `Json` is a wrapper
 for php's `json_decode` that helps handle some security issues. `UrlHelper` helps
 us build a query string safely and properly encoded.
@@ -304,7 +309,7 @@ We also need to add our new service to the services.yml file:
 We add a method here to retrieve a page of results, defaulting to page 1.
 
 ```
-  protected function getPosts($page_number = 1) {
+  public function getPosts($page_number = 1) {
     if (isset($this->retrievedPosts[$page_number])) {
       return $this->retrievedPosts[$page_number];
     }
