@@ -525,6 +525,12 @@ class BatchProcessor {
 ```
 ### 7.2 Creating the batch builder.
 
+Add the use statements to use the BatchBuilder and our new BatchProcessor:
+```
+use Drupal\Core\Batch\BatchBuilder;
+use Drupal\sync_external_posts\Batch\BatchProcessor;
+```
+
 Add the batch builder to our submit handler. Let's talk through each bit.
 Note that the BatchProcessor methods will be called statically.
 ```
