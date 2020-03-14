@@ -845,7 +845,7 @@ A fully commented version can be found in the repo.
 
 ### Create the migration
 
-In `config/install/migrate.migration.paint_cans.yml` add the migration:
+In `config/install/migrate_plus.migration.paint_cans.yml` add the migration:
 ```
 id: paint_cans
 label: 'Migration of Paint Cans from the API'
